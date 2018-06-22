@@ -1,0 +1,67 @@
+---
+title: "R_plots"
+author: "Antonio"
+date: "June 21, 2018"
+output: html_document
+---
+
+```{r}
+library(plyr)
+library(dplyr)
+library(readr)
+library(ggplot2)
+
+
+```
+
+
+```{r setup, include=FALSE}
+
+popc_popg_7_3 = read.table("./data/popc_popg_7_3_a_sn2_porden_popg.txt",col.names = c("V1","atoms","V3","V4","POP" ))
+popg = read.table("./data/popg_a_sn2_porden_popg.txt",col.names = c("V1","atoms","V3","V4","POP" ))
+popg_pope_1_3 = read.table("./data/popg_pope_1_3_a_sn2_porden_popg.txt",col.names = c("V1","atoms","V3","V4","POP" ))
+popg_pope_3_1 = read.table("./data/popg_pope_3_1_a_sn2_porden_popg.txt",col.names = c("V1","atoms","V3","V4","POP" ))
+```
+
+Vamos a usar dplyr para unir tódolos datasets
+```{r}
+popc_popg_7_3 %>% mutate(tipo="POPC_POPG_7_3")->popc_popg_7_3
+popg%>%mutate(tipo="POPG")->popg
+popg_pope_1_3%>%mutate(tipo="POPC_POPE_1_3")->popg_pope_1_3
+popg_pope_3_1%>%mutate(tipo="POPC_POPE_3_1")->popg_pope_3_1
+
+
+my_data<-bind_rows(popc_popg_7_3,popg,popg_pope_1_3,popg_pope_3_1)# o valor POP  é o valor numérico e o tipo vai noutra columna
+rm(list=ls(pattern="pop"))# por limpeza do entorno
+```
+
+
+
+
+## Including Plots
+
+
+```{r pressure, echo=FALSE}
+
+
+gg<-ggplot( my_data,aes(x=atoms,y=POP)) #esta é a definición da gráfica
+
+x<-gg + geom_point(aes(colour=tipo))
+
+x
+
+# ##Unir los puntos con una línea
+# ggplot(my, aes(y=POP, x=atoms)) + scale_fill_discrete(name="Experimental\nCondition",
+#                                                       breaks=c("ctrl", "trt1", "trt2"),
+#                                                       labels=c("Control", "Treatment 1", "Treatment 2")) +
+#   geom_line() 
+# 
+# #Representar la gráfica 
+# ggplot(data=my)  +
+#   geom_point(aes(y=POPG, x=atoms)) +
+#   geom_point(aes(y=POPC_POPG_7_3, x=atoms))+
+#   geom_point(aes(y=POPG_POPE_1_3, x=atoms))+
+#   geom_point(aes(y=POPG_POPE_3_1, x=atoms))+
+#   geom_line()
+```
+.
